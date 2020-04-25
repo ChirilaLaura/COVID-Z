@@ -5,12 +5,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Covid-Z | Part of the change</title>
+
     <script src="static/js/jquery.min.js" type="text/javascript"></script>
     <script src="static/js/popper.min.js" type="text/javascript"></script>
     <script src="static/js/tether.min.js" type="text/javascript"></script>
     <script src="static/js/mdb.min.js" type="text/javascript"></script>
     <script src="static/js/mdb.min.js" type="text/javascript"></script>
-	<script src="static/js/anim.js" type="text/javascript"></script>
+	 <script src="static/js/anim.js" type="text/javascript"></script>
+
     <!-- CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
@@ -23,6 +25,36 @@
 </head>
 
 <body>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
+
+  <script>
+
+  async function start() {
+
+  const model1 = await tf.loadLayersModel('model_xray/model.json');
+  const model2 = await tf.loadLayersModel('model_covid/model.json');
+
+   const canvas = document.getElementById("myCanvas");
+   var ctx = canvas.getContext("2d");
+   var tmpImage = new Image();
+   tmpImage.src = 'radiografie.jpg';
+   tmpImage.onload = function(){
+   ctx.drawImage(tmpImage,0,0,224,224);
+   imageData = ctx.getImageData(null, 0, 64, 64);
+   const tensor = tf.browser.fromPixels(imageData);
+   const eTensor = tensor.expandDims(0);
+   var prediction = model1.predict(eTensor).print();
+   console.log(prediction);
+  // console.log(imageData);
+//   console.log(tensor);
+  // console.log(eTensor);
+}
+
+}
+
+start();
+
+  </script>
 <!--Navbar-->
 <nav class="navbar navbar-expand-lg navbar-light deep-orange fixed-top">
 
@@ -72,3 +104,6 @@
     </div>
 </nav>
 
+<div id="canvasContainer">
+    <canvas id="myCanvas" height="450" width="650"></canvas>
+    </div>
