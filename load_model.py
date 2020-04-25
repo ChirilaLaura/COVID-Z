@@ -63,7 +63,7 @@ for p in imagePaths:
 
 	# an index of zero is the 'parasitized' label while an index of
 	# one is the 'uninfected' label
-	label = "other" if pred == 0 else "xray"
+	label = "infectat" if pred == 0 else "sanatos"
 	color = (0, 0, 255) if pred == 0 else (0, 255, 0)
 
 	# resize our original input (so we can better visualize it) and

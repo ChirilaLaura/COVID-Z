@@ -31,23 +31,34 @@
 
   async function start() {
 
-  const model1 = await tf.loadLayersModel('model_xray/model.json');
+  tf.loadLayersModel('model_xray/model.json').then(function(model) {
+   window.model = model;
+  });
+
+  window.model.predict([tf.tensor(input).reshape([1, 28, 28, 1])]).array().then(function(scores){
+  scores = scores[0];
+  predicted = scores.indexOf(Math.max(...scores));
+  $('#myCanvas').html(predicted);
+  });
+
   const model2 = await tf.loadLayersModel('model_covid/model.json');
 
    const canvas = document.getElementById("myCanvas");
    var ctx = canvas.getContext("2d");
    var tmpImage = new Image();
-   tmpImage.src = 'radiografie.jpg';
-   tmpImage.onload = function(){
+   tmpImage.src = 'imagini_random2.jpg';
+   tmpImage.onload = async function(){
    ctx.drawImage(tmpImage,0,0,224,224);
    imageData = ctx.getImageData(null, 0, 64, 64);
    const tensor = tf.browser.fromPixels(imageData);
    const eTensor = tensor.expandDims(0);
-   var prediction = model1.predict(eTensor).print();
-   console.log(prediction);
-  // console.log(imageData);
-//   console.log(tensor);
-  // console.log(eTensor);
+   var prediction = model2.predict(eTensor);
+   const value = await prediction.data();
+   console.log(prediction.dataSync());
+   console.log(value);
+   //console.log(imageData);
+   //console.log(tensor);
+   //console.log(eTensor);
 }
 
 }
